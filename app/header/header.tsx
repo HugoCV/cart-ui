@@ -14,11 +14,15 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { AuthContext } from '../auth/auth-context';
-import { routes, unauthorizedRoutes } from '../common/constants/routes';
+import { routes, unauthorizedRoutes } from '../common/constants/routes';;
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-export default function ResponsiveAppBar() {
+interface HeaderProps {
+  logout?: () => void;
+}
+
+export default function Header({ logout }: HeaderProps): React.JSX.Element {
   const { isAuthenticated } = useContext(AuthContext);
 
 
@@ -123,7 +127,7 @@ export default function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
-          {isAuthenticated && <Settings settings={settings} />}
+          {isAuthenticated && <Settings settings={settings} logout={logout}/>}
           
         </Toolbar>
       </Container>
@@ -133,9 +137,10 @@ export default function ResponsiveAppBar() {
 
 interface SettingsProps {
   settings: string[];
+  logout?: () => void;
 }
 
-const Settings = ({ settings }: SettingsProps) => {
+const Settings = ({ settings, logout }: SettingsProps) => {
   const [anchorElUser, setAnchorElUser] =useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
@@ -163,11 +168,15 @@ const Settings = ({ settings }: SettingsProps) => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {settings.map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-          </MenuItem>
-        ))}
+        <form action={logout}>
+          {settings.map((setting) => (
+            <MenuItem key={setting} onClick={handleCloseUserMenu}>
+              <Button type={setting === 'Logout' ? 'submit' : 'button'} sx={{ textAlign: 'center', color: 'inherit', textTransform: 'none', padding: 0, minWidth: 0 }}>
+                {setting}
+              </Button>
+            </MenuItem>
+          ))}
+        </form>
       </Menu>
     </Box>
   );

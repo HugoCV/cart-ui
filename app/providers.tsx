@@ -1,8 +1,8 @@
 "use client";
 
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { useState } from "react";
-import { ThemeProvider } from "@emotion/react";
+import { ThemeProvider } from "@mui/material/styles";
 import darkTheme from "./dark.theme";
 import { AuthContext } from "./auth/auth-context";
 
@@ -12,11 +12,13 @@ interface ProvidersProps {
 }
 
 export default function Providers({ children, authenticated }: ProvidersProps) {
-  const [isAuthenticated] = useState(authenticated);
+  const [isAuthenticated, setIsAuthenticated] = useState(authenticated);
   return (
     <AppRouterCacheProvider>
       <ThemeProvider theme={darkTheme}>
-        <AuthContext.Provider value={{ isAuthenticated: isAuthenticated || false }}>
+        <AuthContext.Provider
+          value={{ isAuthenticated: isAuthenticated || false, setIsAuthenticated }}
+        >
           {children}
         </AuthContext.Provider>
       </ThemeProvider>
